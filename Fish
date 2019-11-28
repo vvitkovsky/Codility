@@ -1,0 +1,33 @@
+// you can use includes, for example:
+// #include <algorithm>
+#include <stack>
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+int solution(vector<int> &A, vector<int> &B) {
+    // write your code in C++14 (g++ 6.2.0)
+    
+    stack<int> upstream;
+    stack<int> downstream;
+    for (size_t i = 0; i < A.size(); ++i) {
+        if (B[i] == 0) {
+            upstream.push(i);
+            
+            while (downstream.size() > 0) {
+                auto down = downstream.top();
+                if (A[i] > A[down]) {
+                    downstream.pop();
+                }
+                if (A[i] < A[down]) {
+                    upstream.pop();
+                    break;
+                }
+            }
+        }  
+        else {
+            downstream.push(i); 
+        }
+    }
+    
+    return upstream.size() + downstream.size();
+}
