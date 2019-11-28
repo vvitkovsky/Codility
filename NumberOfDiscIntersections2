@@ -1,0 +1,44 @@
+// you can use includes, for example:
+#include <algorithm>
+
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+struct Interval {
+    long left;
+    long right;
+};
+
+inline bool mySortFunction(Interval p1, Interval p2) {
+    return ( p1.left < p2.left );
+}
+
+int solution(vector<int> &A) {
+    // write your code in C++14 (g++ 6.2.0)
+    if (A.empty()) {
+        return 0;
+    }
+    
+    vector<Interval> arr;
+
+    for (size_t i = 0; i < A.size(); ++i) {
+        arr.push_back({ (long)(i - A[i]), long(i + A[i]) });
+    }
+    
+    std::sort(arr.begin(), arr.end(), mySortFunction);
+
+    int result = 0;
+    for (size_t i = 0; i < arr.size(); ++i) {
+        for (size_t j = i + 1; j < arr.size(); ++j)
+        {
+            if (arr[j].left > arr[i].right) {
+                break;
+            }
+            
+            if (++result > 10000000) {
+                return -1;
+            }  
+        }
+    }
+    return result;
+}
