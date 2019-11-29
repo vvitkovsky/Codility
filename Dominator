@@ -1,0 +1,47 @@
+// you can use includes, for example:
+// #include <algorithm>
+
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+int solution(vector<int> &A) {
+    // write your code in C++14 (g++ 6.2.0)
+    auto n = A.size();
+    int size = 0;
+    
+    int value = 0;
+    for (size_t k = 0; k < A.size(); ++k) {
+        if (size == 0) {
+            size++;
+            value = A[k];
+        }
+        else {
+            if (value != A[k]) {
+                size--;
+            }
+            else {
+                size++;
+            }
+        }
+    }
+    
+    int candidate = -1;
+    if (size > 0) {
+        candidate = value;
+    }
+    
+    int leader = -1;
+    int count = 0;
+    int index = 0;
+    
+    for (size_t k = 0; k < A.size(); ++k) {
+        if (A[k] == candidate) {
+            count++;
+            index = k;
+        }
+    }
+    if (count > (int)(n / 2)) {
+        leader = candidate;
+    }
+    return leader > 0 ? index : -1;
+}
