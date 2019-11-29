@@ -1,0 +1,51 @@
+// you can use includes, for example:
+// #include <algorithm>
+#include <stack>
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+int solution(vector<int> &H) {
+    // write your code in C++14 (g++ 6.2.0)
+    
+    int last = -1;
+    int sum = 1;
+    
+    stack<int> data;
+    for (size_t i = 0; i < H.size(); ++i) {
+        
+        auto x = H[i];
+        
+        if (i == 0) {
+            last = x;
+            data.push(x);
+            continue;
+        }    
+        
+        if (last != x) {
+            if (last < x) {
+                data.push(x);
+                sum++;
+            }
+            else {
+                sum++;
+                while (!data.empty()) {
+                    auto top = data.top();
+                    if (top > x) {
+                        data.pop();
+                        continue;
+                    }
+                    else if (top == x) {
+                        sum--;
+                        break;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                data.push(x);
+            }
+            last = x;
+        }
+    }
+    return sum;
+}
