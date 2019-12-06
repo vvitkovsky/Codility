@@ -1,0 +1,11 @@
+int solution(int N) {
+    // write your code in C++14 (g++ 6.2.0)
+    int min = 2 * (N + 1);
+    int i = 1;
+    for (; i * i <= N; i++) {
+        if (N % i == 0) {
+            min = std::min(min, 2 * (i + N / i));
+        }
+    }
+    return min;
+}
