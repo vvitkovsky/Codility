@@ -1,0 +1,46 @@
+int solution(vector<int> &A) {
+    // write your code in C++14 (g++ 6.2.0)
+    auto N = A.size();
+    vector<int> peaks;
+    for (size_t i = 1; i < N - 1; ++i) {
+        if (A[i - 1] < A[i] && A[i] > A[i + 1]) {
+            peaks.push_back(i);
+        }
+    }
+    
+    int len = peaks.size();
+    if (len <= 2) {
+        return len;
+    }
+    
+    // from the "biggest possible number" to smaller number
+    for(int numBlocks = N; numBlocks >= 1; numBlocks--){
+                
+        if (N % numBlocks == 0){ // it is divisible   
+        
+            int blockSize = N / numBlocks; 
+            int ithOkBlock = 0;  // the ith block has peak(s)
+
+            // test all the peaks 
+            // if a peak is found in the ith block
+            // then, go to the (i+1)th block
+            for(int peaksIndex : peaks){
+                if( peaksIndex / blockSize == ithOkBlock){ // peak in the ith block
+                    ithOkBlock++; // go to check (i+1)th block
+                }
+            }   
+            
+            // ithOkBlock: the number of blocks having peak(s) 
+            // if all the blocks have peak(s)
+            // then, return the number of blocks
+            // note: we test from the biggest possible number
+            // so, once we find it, we can just return it
+            // (no need to check the smaller possible numbers)
+            if (ithOkBlock == numBlocks){
+                return numBlocks;
+            }
+        }
+    }   
+    
+    return 0; 
+}
