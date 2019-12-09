@@ -1,0 +1,52 @@
+int solution(vector<int> &A) {
+    // write your code in C++14 (g++ 6.2.0)
+    
+    std::vector<int> peaks;
+    for (size_t i = 1; i < A.size() - 1; ++i) {
+        if (A[i - 1] < A[i] && A[i] > A[i + 1]) {
+            peaks.push_back(i);
+        }
+    }
+    
+    int len = peaks.size();
+    if (len < 2) {
+        return len;
+    }
+    
+    int first = *peaks.begin();
+    int last = *peaks.rbegin();
+    
+    int flags = len;
+    for (; flags > 1; flags--) {
+        
+        // Check difference, skip too big count
+        int diff = (last - first) / flags + 1;
+        if (diff < flags) {
+            continue;
+        }
+        
+        // Check that all peaks have required distance
+        int left = peaks[0];
+        int peakCount = 1;
+        int skipCount = 0;
+        
+        for (int i = 1; i < len; i++) {
+            if (abs(left - peaks[i]) >= flags) {
+                if (++peakCount == flags) {
+                    break;
+                }
+                left = peaks[i];
+            }
+            else {
+                if (len - ++skipCount < flags) {
+                    break;
+                }
+            }
+        }
+        
+        if (peakCount == flags) {
+            break;
+        }
+    }
+    return flags;
+}
