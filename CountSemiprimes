@@ -1,0 +1,66 @@
+#include <set>
+
+// Count primes, not used here
+std::set<int> Primes(int N) {
+    vector<bool> sieve(N + 1, true);
+    sieve[0] = sieve[1] = false;
+    
+    for (int i = 2; i * i <= N; ++i) {
+        if (sieve[i]) {
+            for (int k = i * i; k <= N; k += i) {
+                sieve[k] = false;
+            }
+        }   
+    }
+    
+    std::set<int> result;
+    for (size_t i = 0; i < sieve.size() - 1; ++i) {
+        if (sieve[i] && N % i == 0) {
+            result.insert(i);
+        }
+    }
+    return result;
+}
+
+vector<int> solution(int N, vector<int> &P, vector<int> &Q) {
+    // write your code in C++14 (g++ 6.2.0)
+
+    int M = P.size();
+    vector<int> result(M, 0);
+    if (N < 4) {
+        return result;
+    }
+    
+    // Count smallest prime factor of number N is stored in the array Factor[N]. 
+    // Then if Factor[N/Factor[N]] = 0, we have a semi prime number incrementing a sum scan. 
+    // The entry r of the returned array will then be: A[r]=Inclusive_scan[Q[r]]-Inclusive_scan[P[r]-1].
+    
+    vector<int> factor(N + 1, 0);
+    for (int i = 2; i * i <= N; ++i) {
+        if (factor[i] == 0) {
+            for (int k = i * i; k <= N; k += i) {
+                factor[k] = i;
+            }
+        }   
+    }
+    
+    vector<int> inc(N + 1, 0);
+    int cnt_semi = 0;
+    
+    for (int k = 4; k < N + 1; k++) {
+        if (factor[k] != 0) {
+            if (factor[k / factor[k]] == 0) {
+                cnt_semi++;
+            }
+        }
+        inc[k] = cnt_semi;
+    }
+    
+    for (int r = 0; r < M; r++) {
+        int min = P[r] <= 4 ? 0 : P[r] - 1;
+        int max = Q[r];
+        result[r] = inc[max] - inc[min];
+    }
+
+    return result;
+}
