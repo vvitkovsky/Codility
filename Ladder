@@ -1,0 +1,32 @@
+// you can use includes, for example:
+#include <algorithm>
+#include <math.h>
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+int FibNumber(int n) {
+    vector<int> fib(n + 2, 0);
+    fib[1] = 1;
+    for (int i = 2; i <= n + 1; ++i) {
+        fib[i] = fib[i - 1] + fib[i - 2];
+    }
+    return fib[n];
+}
+
+vector<int> solution(vector<int> &A, vector<int> &B) {
+    // write your code in C++14 (g++ 6.2.0)
+    int n = *std::max_element(A.begin(), A.end());
+    
+    vector<int> fib(n + 2, 0);
+    fib[1] = 1;
+    for (int i = 2; i <= n + 1; ++i) {
+        fib[i] = fib[i - 1] + fib[i - 2];
+    }
+    
+    std::vector<int> result(A.size(), 0);
+    for (size_t i = 0; i < A.size(); ++i) {
+        int fibVal = fib[A[i] + 1];
+        result[i] = fibVal & ((1 << B[i]) - 1);
+    }
+    return result;
+}
