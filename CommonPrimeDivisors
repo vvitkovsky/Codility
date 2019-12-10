@@ -1,0 +1,36 @@
+// Compute greatest common divisor
+int gcd(int a, int b) {
+    if (a % b == 0) {
+        return b;
+    }
+    return gcd(b, a % b);
+}
+
+// Check if val divisible 
+int checkGcd(int val, int gcdVal) {
+    int gcdTemp = 0;
+    while (val != 1) {
+        gcdTemp = gcd(val, gcdVal);
+        if (gcdTemp == 1) {
+            break;
+        }
+        val = val / gcdTemp;
+    }
+    return (val == 1);
+}
+
+// Check if values have same dividers
+bool checkSame(int a, int b) {
+    int gcdVal = gcd(a, b);
+    return checkGcd(a, gcdVal) && checkGcd(b, gcdVal);
+}
+
+int solution(vector<int> &A, vector<int> &B) {  
+    int result = 0;
+    for (size_t i = 0; i < A.size(); ++i) {
+        if (checkSame(A[i], B[i])) {
+            result++;
+        }
+    }
+    return result;
+}
