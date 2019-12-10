@@ -1,0 +1,38 @@
+// you can use includes, for example:
+#include <algorithm>
+
+// you can write to stdout for debugging purposes, e.g.
+// cout << "this is a debug message" << endl;
+
+vector<int> solution(vector<int> &A) {
+    // write your code in C++14 (g++ 6.2.0)
+    size_t N = A.size();
+    auto max = *std::max_element(A.begin(), A.end()) + 1;
+    
+    // Calculate occurences of each number in the array
+    vector<int> counts(max, 0);
+    for (size_t i = 0; i < N; ++i) {
+        counts[A[i]]++;
+    }
+    
+    vector<int> result(N, 0);
+    for (size_t i = 0; i < N; ++i) {
+        // Calulate how many of its divisors are in the array
+        int divisors = 0;
+        // Find all divisors for A[i] element 
+        for (int j = 1; j * j <= A[i]; ++j) {
+            if (A[i] % j == 0) {
+                divisors += counts[j];
+                
+                // Check reverse divisor
+                if (A[i] / j != j) {
+                    divisors += counts[A[i] / j];
+                }
+            }
+        }
+        // Subtract the number of divisors from the number of elements in the array
+        result[i] = N - divisors;
+    }
+    
+    return result;
+}
