@@ -1,0 +1,119 @@
+// 100% solution
+
+int solution(vector<int> &A) {
+    // you can always step on the other shore, this simplifies the algorithm
+    A.push_back(1);
+    int n = A.size();
+    if (n <= 3) {
+        return 1;
+    }
+    
+    vector<int> fib;
+    fib.push_back(0);
+    fib.push_back(1);
+    
+    for (int i = 2; i <= n; ++i) {
+        int val = fib[i - 1] + fib[i - 2];
+        if (val > n) {
+            break;
+        }
+        fib.push_back(val);
+    }
+    
+    // this array will hold the optimal jump count that reaches this index
+    vector<int> reachable(n, -1);
+    
+    // get the leafs that can be reached from the starting shore
+    for (auto jump : fib) {
+        if (A[jump - 1] == 1) {
+            reachable[jump - 1] = 1;
+        }
+    }
+    
+    // iterate all the positions until you reach the other shore
+    for (int idx = 0; idx < n; ++idx) {
+        
+        // ignore non-leafs and already found paths
+        if (A[idx] == 0 || reachable[idx] > 0) {
+            continue;
+        }
+        
+        // get the optimal jump count to reach this leaf
+        int min_idx = -1;
+        int min_value = 100000;
+        
+        for (auto jump : fib) {
+            int previous_idx = idx - jump;
+            if (previous_idx < 0) {
+                break;
+            }
+            
+            if (reachable[previous_idx] > 0 && min_value > reachable[previous_idx]) {
+                min_value = reachable[previous_idx];
+                min_idx = previous_idx;
+            }
+        }
+                
+        if (min_idx != -1) {
+            reachable[idx] = min_value + 1;
+        }
+    }
+    
+    return reachable[n - 1];
+}
+
+// My solution using recursize
+
+int jump(int currentPos, int currentJumps, int previousMinJumps, vector<int> &A, vector<int> fib) {
+    if (previousMinJumps != 0 && previousMinJumps == currentJumps + 1) {
+        return 0;
+    }
+
+    int n = A.size();
+    
+    int minJumps = 0;
+    for (size_t i = fib.size() - 1; i > 1; i--) {
+
+        int nextPos = currentPos + fib[i];
+        
+        if (nextPos == n - 1) {
+            return ++currentJumps;
+        }
+        
+        if (nextPos > n - 1) {
+            continue;
+        }
+        
+        if (A[nextPos] == 1) {
+            int jumps = jump(nextPos, currentJumps + 1, minJumps, A, fib);
+            if (jumps > 0) {
+                minJumps = minJumps == 0 ? jumps : min(minJumps, jumps);
+            }
+        }
+    }
+    return minJumps;
+}
+
+int solution(vector<int> &A) {
+    // other shore
+    A.push_back(1);
+    int n = A.size();
+    
+    vector<int> fib;
+    fib.push_back(0);
+    fib.push_back(1);
+    
+    for (int i = 2; i <= n + 1; ++i) {
+        int val = fib[i - 1] + fib[i - 2];
+        if (val > n) {
+            break;
+        }
+        fib.push_back(val);
+    }
+    
+    int result = jump(-1, 0, 0, A, fib);
+    if (result == 0) {
+        result = -1;
+    }
+    return result;
+}
