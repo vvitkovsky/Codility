@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <climits>
 
+// 100% solution
 int binsearch(std::vector<std::pair<int, int>>& nails, int start, int end, int preResult) {
     // Function: find the nails, that could nail this plank.
     //
@@ -81,4 +82,157 @@ int solution(vector<int> &A, vector<int> &B, vector<int> &C) {
         if (result == -1) return -1;
     }
     return result + 1;
+}
+
+// 50% solution
+#include <algorithm>
+
+int solution(vector<int> &A, vector<int> &B, vector<int> &C) {
+    
+    std::vector<std::pair<int, int>> intervals;
+    for (size_t i = 0; i < A.size(); ++i) {
+        intervals.emplace_back(A[i], B[i]);
+    }
+
+    std::sort(intervals.begin(), intervals.end());
+
+    int result = 0;
+    for (auto x : C) {
+
+        result++;
+
+        int begin = 0;
+        int end = intervals.size() - 1;
+
+        int resultPos = -1;
+
+        while (begin <= end) {
+            auto mid = (begin + end) / 2;
+            auto midVal = intervals[mid];
+
+            if (x < midVal.first) {
+                end = mid - 1;
+            }
+            else if (x > midVal.second) {
+                begin = mid + 1;
+            }
+            else {
+                end = mid - 1;
+                resultPos = mid;
+            }
+        }
+
+        if (resultPos < 0) {
+            continue;
+        }
+
+        auto itr = intervals.begin() + resultPos;
+        
+        while (itr != intervals.end()) {
+            if (itr->first <= x && x <= itr->second) {
+                itr = intervals.erase(itr);
+                if (intervals.empty()) {
+                    break;
+                }
+            }
+            else {
+                ++itr;
+            }
+        }
+
+        if (intervals.empty()) {
+            break;
+        }
+    }
+
+    if (result == 0 || !intervals.empty()) {
+        result = -1;
+    }
+    return result;
+}
+
+// 50% solution
+#include <algorithm>
+
+int solution(vector<int> &A, vector<int> &B, vector<int> &C) {    
+    std::vector<std::pair<int, int>> intervals;
+    for (size_t i = 0; i < A.size(); ++i) {
+        intervals.emplace_back(A[i], B[i]);
+    }
+    
+    std::sort(intervals.begin(), intervals.end());
+    
+    int result = 0;
+    for (auto x : C) {
+        result++;
+        for (auto itr = intervals.begin(); itr != intervals.end();){
+            if (itr->first <= x && x <= itr->second) {
+                itr = intervals.erase(itr);
+            }
+            else {
+                ++itr;
+            }
+        }
+
+        if (intervals.empty()) {
+            break;
+        }
+    }
+    
+    if (result == 0 || !intervals.empty()) {
+        result = -1;
+    }
+    return result;
+}
+
+// 62% solution
+#include <algorithm>
+
+int solution(vector<int> &A, vector<int> &B, vector<int> &C) {
+    
+    std::vector<std::pair<int, int>> intervals;
+    for (size_t i = 0; i < A.size(); ++i) {
+        intervals.emplace_back(A[i], B[i]);
+    }
+
+    std::sort(intervals.begin(), intervals.end());
+
+    int result = 0;
+    for (auto x : C) {
+        result++;
+        auto itr = std::lower_bound(intervals.begin(), intervals.end(), std::make_pair(x, 0));
+        if (itr == intervals.end()) {
+            --itr;
+        }
+
+        do
+        {
+            if (itr->first <= x && x <= itr->second) {
+                itr = intervals.erase(itr);
+                if (intervals.empty()) {
+                    break;
+                }
+            }
+            
+            if (itr == intervals.begin()) {
+                break;
+            }
+            
+            --itr;
+
+            if (x > itr->first && x > itr->second) {
+                break;
+            }
+
+        } while (!intervals.empty());
+
+        if (intervals.empty()) {
+            break;
+        }
+    }
+
+    if (result == 0 || !intervals.empty()) {
+        result = -1;
+    }
+    return result;
 }
