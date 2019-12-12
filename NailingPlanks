@@ -1,0 +1,84 @@
+#include <algorithm>
+#include <climits>
+
+int binsearch(std::vector<std::pair<int, int>>& nails, int start, int end, int preResult) {
+    // Function: find the nails, that could nail this plank.
+    //
+    // Input: plankBegin: the begin position of current plank
+    //        plankEnd: the end position of current plank
+    //        nails: the nails' position and index
+    //        preResult: for all of the previous planks, the
+    //           first preResult+1 nails in original array
+    //           could be sequentially used to nail them.
+    //
+    // Return: If all these nails are after the preResult's
+    //       position, return the first nail's position in
+    //       the original nails' array.
+    //       Else, return the preResult as the result.
+    int result = -1;     // The index of nail in the original array
+    int resultPos = -1;  // The index of nail in the sorted array
+    int nailLower = 0;
+    int nailUpper = nails.size() - 1;
+
+    // Find the first nail, whose postion >= plankBegin and
+    // position <= plankEnd, with binary search algorithm
+    while (nailLower <= nailUpper) {
+        int nailMid = (nailLower + nailUpper) / 2;
+        int nailPosMid = nails[nailMid].first;
+        
+        if (nailPosMid < start) {
+            nailLower = nailMid + 1; 
+        }
+        else if (nailPosMid > end) {
+            nailUpper = nailMid - 1;
+        }
+        else {
+            nailUpper = nailMid - 1;
+            result = nails[nailMid].second;
+            resultPos = nailMid;
+        }
+    }
+    
+    // Cannot find one, which could nail the plank
+    if (result == -1) return -1;
+    
+    // Linear search all the quanlified nails, and find out the one with the earliest position.
+    resultPos++;
+    while (resultPos < nails.size()) {
+        // Not quanlified anymore
+        if (nails[resultPos].first > end) {
+            break;
+        }
+        result = min(result, nails[resultPos].second);
+        resultPos++;
+        
+        // If we find a position before the preResult. We could
+        // terminate our search and return.
+        // With a position before the preResult, the result for
+        // this round must <= preResult. And globally, the final
+        // result is the maximum of ALL the results in each rounds.
+        // So the result of this round actually does not affect
+        // the final result.
+        if (preResult >= result) return preResult;
+    }
+    return max(preResult, result);
+}
+
+int solution(vector<int> &A, vector<int> &B, vector<int> &C) {
+    
+    // Sort the nails according to their positions
+    std::vector<std::pair<int, int>> nails;
+    for (size_t i = 0; i < C.size(); ++i) {
+        nails.emplace_back(C[i], i);
+    }
+    
+    std::sort(nails.begin(), nails.end());
+    
+    int result = -1;
+    for (size_t i = 0; i < A.size(); ++i) {
+        // Find a nail for the current plank
+        result = binsearch(nails, A[i], B[i], result);
+        if (result == -1) return -1;
+    }
+    return result + 1;
+}
