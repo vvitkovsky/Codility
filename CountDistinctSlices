@@ -1,0 +1,48 @@
+// 100% solution
+
+int solution(int M, vector<int> &A) {  
+    int n = A.size();
+    long result = 0;
+    int front = 0;
+    int back = 0;
+    
+    vector<bool> seen(M, false);
+    
+    while (front < n) {
+        if (back < n && !seen[A[back]]) {
+            seen[A[back]] = true;
+            ++back;
+        }
+        else {
+            result += (back - front);
+            if (result > 1000000000) {
+                return 1000000000;
+            }
+            seen[A[front]] = false;
+            front++;
+        }
+    }
+    
+    return result;
+}
+
+// 70% solution
+#include <set>
+
+int solution(int M, vector<int> &A) {
+    int result = 0;    
+    set<int> cat;
+    for (size_t i = 0; i < A.size(); ++i) {
+        for (size_t j = i; j < A.size(); ++j) {
+            if (cat.insert(A[j]).second) {
+                if (++result >= 1000000000) {
+                    return 1000000000;
+                };
+                continue;
+            }  
+            break;
+        }
+        cat.clear();
+    }    
+    return result;
+}
