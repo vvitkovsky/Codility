@@ -1,0 +1,30 @@
+// 100% solution
+#include <algorithm>
+
+int solution(vector<int> &A) {
+    
+    std::sort(A.begin(), A.end());
+    
+    int n = A.size();
+    int result = 0;
+    
+    for (int x = 0; x < n; ++x) {
+        int y = x + 1;
+        int z = x + 2;
+        
+        while (z < n) {
+            if (A[x] + A[y] > A[z]) {
+                result += z - y;
+                z++;
+            }
+            else if (y < z - 1) {
+                y++;
+            }
+            else {
+                y++;
+                z++;
+            }
+        }
+    }
+    return result;
+}
