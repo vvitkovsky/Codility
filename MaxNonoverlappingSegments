@@ -1,0 +1,13 @@
+int solution(vector<int> &A, vector<int> &B) {
+    int result = 0;
+    int last = -1;
+    int currentMax = 0;
+    for (size_t i = 0; i < A.size(); i++) {
+        if (A[i] > last && B[i] > last) {
+            currentMax++;
+            result = max(result, currentMax);
+            last = B[i];
+        }
+    }
+    return result;
+}
