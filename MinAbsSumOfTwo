@@ -1,0 +1,22 @@
+#include <algorithm>
+#include <climits>
+
+int solution(vector<int> &A) {
+    std::sort(A.begin(), A.end());
+    
+    int begin = 0;
+    int end = A.size() - 1;
+    int result = INT_MAX;
+    
+    while (begin <= end) {
+        result = min(result, abs(A[begin] + A[end]));
+        
+        if (abs(A[begin]) > A[end]) {
+            begin++;
+        }
+        else {
+            end--;
+        }
+    }
+    return result;
+}
