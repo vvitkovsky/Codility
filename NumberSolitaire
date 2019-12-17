@@ -1,0 +1,18 @@
+#include <climits>
+
+int solution(vector<int> &A) {
+    int n = A.size();
+    vector<int> dp(A.size(), INT_MIN);
+    dp[0] = A[0];
+    
+    for (int i = 1; i < n; ++i) {
+        int currentMax = INT_MIN;
+        for (int k = 1; k <= 6; ++k) {
+            if (i >= k) {
+                currentMax = max(currentMax, dp[i - k]);
+            }
+        }
+        dp[i] = currentMax + A[i];
+    }
+    return dp[n - 1];
+}
